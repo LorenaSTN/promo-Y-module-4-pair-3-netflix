@@ -33,7 +33,7 @@ server.get("/movies", async (req, res) => {
     connection.end();
     res.json({
       status: "success",
-      message: result,
+      movies: result,
     });
   } catch (error) {
     console.error("Error getting movies:", error);
@@ -44,5 +44,5 @@ server.get("/movies", async (req, res) => {
   }
 });
 
-// const staticServer = "./web";
-// server.use(express.static(staticServer));
+const staticServer = "./src/public-react";
+server.use(express.static(staticServer));
