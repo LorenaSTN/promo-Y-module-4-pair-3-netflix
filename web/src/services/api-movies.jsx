@@ -1,8 +1,13 @@
 // login
 
-const getMoviesFromApi = () => {
+async function getMoviesFromApi() {
   console.log("Se están pidiendo las películas de la app");
 
+  const response = await fetch("http://localhost:5001/movies");
+  const dataMovies = await response.json();
+  console.log(dataMovies);
+
+  /*
   return (
     fetch("http://localhost:5001/movies")
       // CAMBIA ESTE FETCH PARA QUE APUNTE A UN ENDPOINT DE TU SERVIDOR, PIENSA SI DEBE SER GET O POST, PIENSA QUÉ DATOS DEBES ENVIAR, ETC
@@ -12,7 +17,8 @@ const getMoviesFromApi = () => {
         return data;
       })
   );
-};
+  */
+}
 
 const objToExport = {
   getMoviesFromApi: getMoviesFromApi,
