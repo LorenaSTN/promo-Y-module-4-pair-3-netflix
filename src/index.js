@@ -19,7 +19,7 @@ async function getDBConnection() {
 }
 
 // init express aplication
-const serverPort = 5001;
+const serverPort = 5002;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
