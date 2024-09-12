@@ -1,11 +1,43 @@
 const express = require("express");
 const cors = require("cors");
+const mysql = require("mysql2/promise");
 
 // create and config server
 const server = express();
 server.use(cors());
 server.use(express.json());
 
+const serverPort = 5001;
+server.listen(serverPort, () => {
+  console.log(`Server listening at http://localhost:${serverPort}`);
+});
+
+async function getDBConnection() {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "route",
+    password: "123456",
+    database: "netflix",
+  });
+  connection.connect();
+  return connection;
+}
+
+server.get("/movies", async (req, res) => {
+  const connection = await getDBConnection();
+  const sqlQuery = "SELECT * FROM movies";
+  const [result] = await connection.query(sqlQuery);
+  connection.end();
+  res.json({
+    status: "succes",
+    message: result
+  });
+});
+
+
+
+
+/*
 const fakeMovies = [
   {
     id: 1,
@@ -28,13 +60,12 @@ const fakeMovies = [
     director: "Christopher Nolan",
   },
 ];
+*/
 
 // init express aplication
-const serverPort = 5001;
-server.listen(serverPort, () => {
-  console.log(`Server listening at http://localhost:${serverPort}`);
-});
 
+/*
 server.get("/movies", function (req, res) {
   res.json(fakeMovies);
 });
+*/
