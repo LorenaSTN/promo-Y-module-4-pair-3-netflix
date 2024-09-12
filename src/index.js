@@ -6,12 +6,13 @@ const mysql = require("mysql2/promise");
 const server = express();
 server.use(cors());
 server.use(express.json());
+require("dotenv").config();
 
 async function getDBConnection() {
   const connection = await mysql.createConnection({
     host: "localhost",
-    user: "root",
-    password: "123455",
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: "netflix",
   });
   connection.connect();
@@ -19,29 +20,28 @@ async function getDBConnection() {
 }
 
 // init express aplication
-const serverPort = 5002;
+const serverPort = process.env.PORT;
 server.listen(serverPort, () => {
   console.log(`Server listening at http://localhost:${serverPort}`);
 });
 
 server.get("/movies", async (req, res) => {
-  try {
-    const connection = await getDBConnection();
-    const sqlQuery = "SELECT * FROM netflix.movies";
-    const [result] = await connection.query(sqlQuery);
+  const connection = await getDBConnection();
+  const genreFilterParam = req.query.genre;
 
-    connection.end();
-    res.json({
-      status: "success",
-      movies: result,
-    });
-  } catch (error) {
-    console.error("Error getting movies:", error);
-    res.status(500).json({
-      status: "error",
-      message: "Error getting movies",
-    });
+  let data;
+  if (!genreFilterParam) {
+    const sqlQuery = "SELECT * FROM movies";
+    const [result] = await connection.query(sqlQuery);
+    data = result;
+  } else {
+    const sqlQuery = "SELECT * FROM movies WHERE genre = ?";
+    const [result] = await connection.query(sqlQuery, [genreFilterParam]);
+    data = result;
   }
+  res.json({ success: true, movies: data });
+
+  connection.end();
 });
 
 const staticServer = "./src/public-react";

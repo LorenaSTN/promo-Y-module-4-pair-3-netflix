@@ -1,13 +1,12 @@
 // login
 
-async function getMoviesFromApi() {
-  console.log("Se están pidiendo las películas de la app");
-
-  const response = await fetch("http://localhost:5002/movies");
-  const dataMovies = await response.json();
-  console.log(dataMovies);
-}
-getMoviesFromApi();
+const getMoviesFromApi = (params) => {
+  return fetch(`http://localhost:5001/movies?genre=${params.genre}`)
+    .then((response) => response.json())
+    .then((data) => {
+      return data;
+    });
+};
 
 const objToExport = {
   getMoviesFromApi: getMoviesFromApi,
