@@ -8,6 +8,8 @@ server.use(cors());
 server.use(express.json());
 require("dotenv").config();
 
+server.set("view engine", "ejs");
+
 async function getDBConnection() {
   const connection = await mysql.createConnection({
     host: "localhost",
@@ -35,7 +37,7 @@ server.get("/movies", async (req, res) => {
     const [result] = await connection.query(sqlQuery);
     data = result;
   } else {
-    const sqlQuery = "SELECT * FROM movies WHERE genre = ?";
+    const sqlQuery = "SELECT * FROM movies WHERE gender = ?";
     const [result] = await connection.query(sqlQuery, [genreFilterParam]);
     data = result;
   }
@@ -44,5 +46,21 @@ server.get("/movies", async (req, res) => {
   connection.end();
 });
 
+server.get("/movies/:movieId", async (req, res) => {
+  const connection = await getDBConnection();
+  const id = req.params.movieId;
+  // console.log("id:", id);
+
+  const query = "SELECT * FROM movies WHERE idMovies = ?";
+  const [result] = await connection.query(query, [id]);
+
+  connection.end();
+
+  res.render("detail", { movie: result[0] });
+});
+
 const staticServer = "./src/public-react";
 server.use(express.static(staticServer));
+
+// const staticServerDetail = "...";
+// server.use(express.static(staticServerDetail));
