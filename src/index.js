@@ -6,66 +6,61 @@ const mysql = require("mysql2/promise");
 const server = express();
 server.use(cors());
 server.use(express.json());
+require("dotenv").config();
 
-const serverPort = 5001;
-server.listen(serverPort, () => {
-  console.log(`Server listening at http://localhost:${serverPort}`);
-});
+server.set("view engine", "ejs");
 
 async function getDBConnection() {
   const connection = await mysql.createConnection({
     host: "localhost",
-    user: "route",
-    password: "123456",
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     database: "netflix",
   });
   connection.connect();
   return connection;
 }
 
+// init express aplication
+const serverPort = process.env.PORT;
+server.listen(serverPort, () => {
+  console.log(`Server listening at http://localhost:${serverPort}`);
+});
+
 server.get("/movies", async (req, res) => {
   const connection = await getDBConnection();
-  const sqlQuery = "SELECT * FROM movies";
-  const [result] = await connection.query(sqlQuery);
+  const genreFilterParam = req.query.genre;
+
+  let data;
+  if (!genreFilterParam) {
+    const sqlQuery = "SELECT * FROM movies";
+    const [result] = await connection.query(sqlQuery);
+    data = result;
+  } else {
+    const sqlQuery = "SELECT * FROM movies WHERE gender = ?";
+    const [result] = await connection.query(sqlQuery, [genreFilterParam]);
+    data = result;
+  }
+  res.json({ success: true, movies: data });
+
   connection.end();
-  res.json({
-    status: "succes",
-    message: result
-  });
 });
 
+server.get("/movies/:movieId", async (req, res) => {
+  const connection = await getDBConnection();
+  const id = req.params.movieId;
+  // console.log("id:", id);
 
+  const query = "SELECT * FROM movies WHERE idMovies = ?";
+  const [result] = await connection.query(query, [id]);
 
+  connection.end();
 
-/*
-const fakeMovies = [
-  {
-    id: 1,
-    title: "Wonder Woman",
-    genre: "Action",
-    image:
-      "https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/media/image/2022/12/gal-gadot-como-wonder-woman-universo-extendido-dc-2895594.jpg?tf=3840x",
-    category: "Superhero",
-    year: 2017,
-    director: "Patty Jenkins",
-  },
-  {
-    id: 2,
-    title: "Inception",
-    genre: "Science Fiction",
-    image:
-      "https://m.media-amazon.com/images/S/pv-target-images/e826ebbcc692b4d19059d24125cf23699067ab621c979612fd0ca11ab42a65cb._SX1080_FMjpg_.jpg",
-    category: "Thriller",
-    year: 2010,
-    director: "Christopher Nolan",
-  },
-];
-*/
-
-// init express aplication
-
-/*
-server.get("/movies", function (req, res) {
-  res.json(fakeMovies);
+  res.render("detail", { movie: result[0] });
 });
-*/
+
+const staticServer = "./src/public-react";
+server.use(express.static(staticServer));
+
+// const staticServerDetail = "...";
+// server.use(express.static(staticServerDetail));
