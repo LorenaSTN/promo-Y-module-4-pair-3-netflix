@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2/promise");
+const bcrypt = require("bcrypt");
 
 // create and config server
 const server = express();
@@ -57,6 +58,28 @@ server.get("/movies/:movieId", async (req, res) => {
   connection.end();
 
   res.render("detail", { movie: result[0] });
+});
+
+server.post("/register", async (req, res) => {
+  const { email, password } = req.body;
+
+  const connection = await getDBConnection();
+
+  const passwordHarshed = await bcrypt.hash(password, 10);
+
+  const query = "INSERT INTO users (email, password) VALUES (?,?)";
+
+  const [newUserResult] = await connection.query(query, [
+    email,
+    passwordHarshed,
+  ]);
+
+  connection.end();
+
+  res.status(201).json({
+    success: true,
+    message: newUserResult.id,
+  });
 });
 
 const staticServer = "./src/public-react";
