@@ -1,6 +1,35 @@
 // login
 
 const sendLoginToApi = (data) => {
+  // console.log("Se están enviando datos al login:", data);
+  // // CAMBIA ESTE FETCH PARA QUE APUNTE A UN ENDPOINT DE TU SERVIDOR, PIENSA SI DEBE SER GET O POST, PIENSA QUÉ DATOS DEBES ENVIAR, ETC
+  // return fetch("http://localhost:5001/register", {
+  //   method: "POST",
+  //   body: JSON.stringify(data),
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  // })
+  //   .then((response) => response.json())
+  //   .then(() => {
+  //     // CAMBIA EL CONTENIDO DE ESTE THEN PARA GESTIONAR LA RESPUESTA DEL SERVIDOR Y RETORNAR AL COMPONENTE APP LO QUE NECESITA
+  //     if (data.success) {
+  //       return {
+  //         success: true,
+  //         userId: data.message,
+  //       };
+  //     } else {
+  //       return {
+  //         success: false,
+  //         errorMessage: data.error,
+  //       };
+  //     }
+  //   });
+};
+
+// signup
+
+const sendSignUpToApi = (data) => {
   console.log("Se están enviando datos al login:", data);
   // CAMBIA ESTE FETCH PARA QUE APUNTE A UN ENDPOINT DE TU SERVIDOR, PIENSA SI DEBE SER GET O POST, PIENSA QUÉ DATOS DEBES ENVIAR, ETC
   return fetch("http://localhost:5001/register", {
@@ -11,39 +40,36 @@ const sendLoginToApi = (data) => {
     },
   })
     .then((response) => response.json())
-    .then(() => {
-      // CAMBIA EL CONTENIDO DE ESTE THEN PARA GESTIONAR LA RESPUESTA DEL SERVIDOR Y RETORNAR AL COMPONENTE APP LO QUE NECESITA
-      if (data.success) {
-        return {
-          success: true,
-          userId: data.message,
-        };
-      } else {
-        return {
-          success: false,
-          errorMessage: data.error,
-        };
-      }
+    .then((data) => {
+      return data;
     });
+  // CAMBIA EL CONTENIDO DE ESTE THEN PARA GESTIONAR LA RESPUESTA DEL SERVIDOR Y RETORNAR AL COMPONENTE APP LO QUE NECESITA
+  // if (data.success) {
+  //   return {
+  //     success: true,
+  //     userId: data.message,
+  //   };
+  // } else {
+  //   return {
+  //     success: false,
+  //     errorMessage: data.error,
+  //   };
+  // }
 };
+///_______
 
-// signup
-
-const sendSignUpToApi = (data) => {
-  console.log("Se están enviando datos al signup:", data);
-  // CAMBIA ESTE FETCH PARA QUE APUNTE A UN ENDPOINT DE TU SERVIDOR, PIENSA SI DEBE SER GET O POST, PIENSA QUÉ DATOS DEBES ENVIAR, ETC
-  return fetch(
-    "//beta.adalab.es/curso-intensivo-fullstack-recursos/apis/netflix-v1/empty.json"
-  )
-    .then((response) => response.json())
-    .then(() => {
-      // CAMBIA EL CONTENIDO DE ESTE THEN PARA GESTIONAR LA RESPUESTA DEL SERVIDOR Y RETORNAR AL COMPONENTE APP LO QUE NECESITA
-      return {
-        success: false,
-        errorMessage: "Usuario ya existente",
-      };
-    });
-};
+// console.log("Se están enviando datos al signup:", data);
+// CAMBIA ESTE FETCH PARA QUE APUNTE A UN ENDPOINT DE TU SERVIDOR, PIENSA SI DEBE SER GET O POST, PIENSA QUÉ DATOS DEBES ENVIAR, ETC
+//   return fetch("http://localhost:5001/register")
+//     .then((response) => response.json())
+//     .then(() => {
+//       // CAMBIA EL CONTENIDO DE ESTE THEN PARA GESTIONAR LA RESPUESTA DEL SERVIDOR Y RETORNAR AL COMPONENTE APP LO QUE NECESITA
+//       return {
+//         success: false,
+//         errorMessage: "Usuario ya existente",
+//       };
+//     });
+// };
 
 // profile
 
